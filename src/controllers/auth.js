@@ -1,6 +1,9 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require("bcryptjs")
+
 const Users = require("../models/users")
 
-const getUsers = (req, res) => {
+exports.getUsers = (req, res) => {
     Users.getAll((err, data) => {
         if (!err)
             res.send({
@@ -18,24 +21,47 @@ const getUsers = (req, res) => {
     });
 }
 
-const login = (req, res) => {
-    Users.getAll((err, data) => {
-        if (!err)
-            res.send({
-                statusCode: 200,
-                message: 'Successfully retrieved all the users.',
-                data: data,
-            });
+exports.login = (req, res) => {
+    const {email, password} = req.body
+
+    Users.findByEmail(email , (err, data) => {
+        if (!err){
+            if (data){
+                const passwordIsValid = bcrypt.compareSync(
+                    password,
+                    data.password
+                );
+
+                if (passwordIsValid){
+                    const token = jwt.sign({ id: data.id, email: data.email }, process.env.JWT_SECRET_KEY, {
+                        expiresIn: 86400 // 24 hours
+                    });
+
+                    res.send({
+                        message: 'Successfully login.',
+                        data: {
+                            token,
+                            name: data.name,
+                            surname: data.surname,
+                            email: data.email,
+                            balance: data.balance
+                        },
+                    });
+                }else{
+                    res.status(401).send({
+                        message: "Invalid username or password",
+                    });
+                }
+            }else{
+                res.status(401).send({
+                    message: "Invalid username or password",
+                });
+            }
+        }
         else {
             res.status(500).send({
-                statusCode: 500,
-                message: e.message,
+                message: err,
             });
         }
-    });
-}
-
-module.exports = {
-    getUsers,
-    login
+    })
 }
