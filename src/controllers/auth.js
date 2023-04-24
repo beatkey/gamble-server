@@ -41,6 +41,7 @@ exports.login = (req, res) => {
                         message: 'Successfully login.',
                         data: {
                             token,
+                            accessTokenExpiry: new Date().getTime() + 86400 * 1000,
                             name: data.name,
                             surname: data.surname,
                             email: data.email,

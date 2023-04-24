@@ -11,14 +11,11 @@ app.use(bodyParser.json());
 
 app.use(require('./src/routes'))
 
-app.listen(process.env.PORT, () => {
+const server = app.listen(process.env.PORT, () => {
     console.log(`Server started on port ${process.env.PORT}!`);
 });
 
-/*
-const app = require("express")();
-const http = require("http").createServer(app);
-const io = require('socket.io')(http, {
+const io = require('socket.io')(server, {
     cors: {
         origin: '*',
     }
@@ -35,9 +32,3 @@ io.on('connection', (socket) => {
         console.log(`A ${socket.id} disconnected.`);
     });
 });
-
-// Start the server
-http.listen(3001, () => {
-    console.log('Server is running...');
-});
-*/
