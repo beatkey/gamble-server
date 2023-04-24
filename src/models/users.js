@@ -14,7 +14,8 @@ const Users = sequelize.define("users", {
     },
     email: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     password: {
         type: DataTypes.TEXT,
@@ -30,17 +31,17 @@ const Users = sequelize.define("users", {
 sequelize.sync().then(() => {
     console.log('Users table created successfully!');
 
-    /*Users.create({
-        name: "Emre",
-        surname: "Cal",
-        email: "emrecaal@gmail.com",
+    Users.create({
+        name: "John",
+        surname: "Doe",
+        email: "test@gmail.com",
         password: bcrypt.hashSync("123123", 8),
         balance: 10000
     }).then(res => {
         console.log(res)
     }).catch((error) => {
         console.error('Failed to create a new record : ', error);
-    });*/
+    });
 
     /*Users.findAll().then(res => {
         console.log(res)
