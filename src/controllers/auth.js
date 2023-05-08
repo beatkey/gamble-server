@@ -33,15 +33,16 @@ exports.login = (req, res) => {
                 );
 
                 if (passwordIsValid){
+                    const expiresIn = 86400 // 24 hours
                     const token = jwt.sign({ id: data.id, email: data.email }, process.env.JWT_SECRET_KEY, {
-                        expiresIn: 86400 // 24 hours
+                        expiresIn: expiresIn
                     });
 
                     res.send({
                         message: 'Successfully login.',
                         data: {
                             token,
-                            accessTokenExpiry: new Date().getTime() + 86400 * 1000,
+                            accessTokenExpiry: new Date().getTime() + expiresIn * 1000, // 24 hours
                             name: data.name,
                             surname: data.surname,
                             email: data.email,

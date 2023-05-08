@@ -31,7 +31,7 @@ const Users = sequelize.define("users", {
 sequelize.sync().then(() => {
     console.log('Users table created successfully!');
 
-    Users.create({
+    /*Users.create({
         name: "John",
         surname: "Doe",
         email: "test@gmail.com",
@@ -41,7 +41,7 @@ sequelize.sync().then(() => {
         console.log(res)
     }).catch((error) => {
         console.error('Failed to create a new record : ', error);
-    });
+    });*/
 
     /*Users.findAll().then(res => {
         console.log(res)
