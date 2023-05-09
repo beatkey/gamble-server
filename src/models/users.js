@@ -1,9 +1,9 @@
 const bcrypt = require("bcryptjs")
-const { Sequelize, DataTypes } = require("sequelize");
+const {Sequelize, DataTypes} = require("sequelize");
 
 const sequelize = require("../utils/sequelize")
 
-const Users = sequelize.define("users", {
+const Table = sequelize.define("users", {
     name: {
         type: DataTypes.STRING,
         allowNull: true
@@ -73,10 +73,10 @@ sequelize.sync().then(() => {
     console.error('Unable to create table : ', error);
 });
 
-Users.findByEmail = (email, result) => {
-    Users.findOne({
+Table.findByEmail = (email, result) => {
+    Table.findOne({
         where: {
-            email : email
+            email: email
         }
     }).then(res => {
         result(null, res);
@@ -86,4 +86,32 @@ Users.findByEmail = (email, result) => {
     });
 }
 
-module.exports = Users
+Table.findByID = (id, result) => {
+    Table.findOne({
+        where: {
+            id: id
+        }
+    }).then(res => {
+        result(null, res);
+    }).catch(err => {
+        console.log("error: ", err);
+        result(null, err);
+    });
+}
+
+Table.setBalance = ({id, balance}, result) => {
+    Table.update({
+        balance
+    }, {
+        where: {
+            id
+        }
+    }).then(res => {
+        result(null, true);
+    }).catch(err => {
+        console.log("error: ", err);
+        result(null, err);
+    });
+}
+
+module.exports = Table
