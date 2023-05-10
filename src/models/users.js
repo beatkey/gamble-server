@@ -114,4 +114,17 @@ Table.setBalance = ({id, balance}, result) => {
     });
 }
 
+Table.getBalance = (id, result) => {
+    Table.findOne({
+        where: {
+            id: id
+        }
+    }).then(res => {
+        result(null, res.balance);
+    }).catch(err => {
+        console.log("error: ", err);
+        result(null, err);
+    });
+}
+
 module.exports = Table

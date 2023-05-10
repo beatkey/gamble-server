@@ -12,14 +12,15 @@ module.exports = server => {
     });
 
     const raffleTime = 3000
-    const spinTime = 9999 // TODO
+    const spinTime = 5 // TODO
     let time = spinTime
 
-    const players = {
+    let players = {
         red: [],
         green: [],
         black: []
     }
+
     const spinRange = {
         /*
         * 2 = -9deg - 14.3deg
@@ -92,8 +93,6 @@ module.exports = server => {
             start()
             giveEarnings(randomNumber)
         }, raffleTime)
-
-        console.log(randomNumber, min, max, range)
     }
 
     const giveEarnings = (randomNumber) => {
@@ -101,6 +100,10 @@ module.exports = server => {
         let color = "";
         if (randomNumber > 0 && randomNumber <= 7) { // red
             color = "red";
+            console.log(players)
+            players.red.forEach(value => {
+                console.log(value)
+            })
             /*setRedPlayers(prevState => {
                 prevState.map((value) => {
                     setBalance(prevState => prevState + value.amount * 2)
@@ -134,16 +137,19 @@ module.exports = server => {
             console.error('Failed to create a new record : ', error);
         });
 
-        /*setRedPlayers([])
-        setBlackPlayers([])
-        setGreenPlayers([])*/
+        players = {
+            red: [],
+            green: [],
+            black: []
+        }
     }
 
     io.on('connection', (socket) => {
-        console.log(`A ${socket.id} connected.`);
-        //console.log(socket.client.conn.server.clientsCount)
-        //console.log(socket.rooms)
-        //socket.emit("hello", "31");
+        //console.log(`A ${socket.id} connected.`);
+
+        socket.on("updatePlayers", (callback) => {
+            callback(players)
+        })
 
         socket.on("playHandle", ({token, amount, color}, callback) => {
             if (!token) {
@@ -170,6 +176,7 @@ module.exports = server => {
                                         if (!players.red.find(value => value.id === data.id)) {
                                             players.red.push({
                                                 id: data.id,
+                                                name: data.name,
                                                 color,
                                                 amount
                                             })
@@ -178,11 +185,12 @@ module.exports = server => {
                                                 id: data.id,
                                                 balance: data.balance - amount
                                             }, (err, data) => {
-                                                if (!err){
+                                                if (!err) {
+                                                    io.emit("updatePlayers", players);
                                                     callback({
                                                         status: true
                                                     })
-                                                }else{
+                                                } else {
                                                     callback({
                                                         message: err,
                                                         status: false
@@ -195,6 +203,7 @@ module.exports = server => {
                                         if (!players.green.find(value => value.id === data.id)) {
                                             players.green.push({
                                                 id: data.id,
+                                                name: data.name,
                                                 color,
                                                 amount
                                             })
@@ -203,11 +212,12 @@ module.exports = server => {
                                                 id: data.id,
                                                 balance: data.balance - amount
                                             }, (err, data) => {
-                                                if (!err){
+                                                if (!err) {
+                                                    io.emit("updatePlayers", players);
                                                     callback({
                                                         status: true
                                                     })
-                                                }else{
+                                                } else {
                                                     callback({
                                                         message: err,
                                                         status: false
@@ -220,6 +230,7 @@ module.exports = server => {
                                         if (!players.black.find(value => value.id === data.id)) {
                                             players.black.push({
                                                 id: data.id,
+                                                name: data.name,
                                                 color,
                                                 amount
                                             })
@@ -228,11 +239,12 @@ module.exports = server => {
                                                 id: data.id,
                                                 balance: data.balance - amount
                                             }, (err, data) => {
-                                                if (!err){
+                                                if (!err) {
+                                                    io.emit("updatePlayers", players);
                                                     callback({
                                                         status: true
                                                     })
-                                                }else{
+                                                } else {
                                                     callback({
                                                         message: err,
                                                         status: false
