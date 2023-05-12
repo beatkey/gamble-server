@@ -154,6 +154,7 @@ module.exports = server => {
             green: [],
             black: []
         }
+        io.emit("updatePlayers", players);
     }
 
     io.on('connection', (socket) => {
