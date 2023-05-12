@@ -1,8 +1,9 @@
+const {Sequelize} = require("sequelize");
+
 const jwt = require("jsonwebtoken");
 
 const Games = require("../models/games")
 const Users = require("../models/users")
-const bcrypt = require("bcryptjs");
 
 module.exports = server => {
     io = require('socket.io')(server, {
@@ -88,44 +89,55 @@ module.exports = server => {
             raffleTime
         });
 
-        setTimeout(() => {
-            spinReset(range)
-            start()
-            giveEarnings(randomNumber)
+        setTimeout(async () => {
+            await giveEarnings(randomNumber)
+            await spinReset(range)
+            await start()
         }, raffleTime)
     }
 
-    const giveEarnings = (randomNumber) => {
+    const giveEarnings = async (randomNumber) => {
         console.log(randomNumber)
-        let color = "";
+        let color = null;
         if (randomNumber > 0 && randomNumber <= 7) { // red
             color = "red";
-            console.log(players)
-            players.red.forEach(value => {
-                console.log(value)
-            })
-            /*setRedPlayers(prevState => {
-                prevState.map((value) => {
-                    setBalance(prevState => prevState + value.amount * 2)
-                })
-                return prevState
-            })*/
+
+            for (const value of players.red) {
+                try {
+                    await Users.update(
+                        {balance: Sequelize.literal(`balance + ${value.amount * 2}`)},
+                        {where: {id: value.id}}
+                    );
+                } catch (e) {
+                    throw new Error(e)
+                }
+            }
         } else if (randomNumber > 7 && randomNumber <= 14) { // black
             color = "black";
-            /*setBlackPlayers(prevState => {
-                prevState.map((value) => {
-                    setBalance(prevState => prevState + value.amount * 2)
-                })
-                return prevState
-            })*/
+
+            for (const value of players.black) {
+                try {
+                    await Users.update(
+                        {balance: Sequelize.literal(`balance + ${value.amount * 2}`)},
+                        {where: {id: value.id}}
+                    );
+                } catch (e) {
+                    throw new Error(e)
+                }
+            }
         } else { // green
             color = "green";
-            /*setGreenPlayers(prevState => {
-                prevState.map((value) => {
-                    setBalance(prevState => prevState + value.amount * 14)
-                })
-                return prevState
-            })*/
+
+            for (const value of players.green) {
+                try {
+                    await Users.update(
+                        {balance: Sequelize.literal(`balance + ${value.amount * 14}`)},
+                        {where: {id: value.id}}
+                    );
+                } catch (e) {
+                    throw new Error(e)
+                }
+            }
         }
 
         Games.create({
@@ -155,16 +167,20 @@ module.exports = server => {
             if (!token) {
                 callback({
                     message: "No token provided!",
+                    code: "NO_TOKEN_PROVIDED",
                     status: false
                 })
+                return
             }
 
             jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
                 if (err) {
                     callback({
-                        message: "Token expired.",
+                        message: "Token expired. You have to login again.",
+                        code: "TOKEN_EXPIRED",
                         status: false
                     })
+                    return
                 }
 
                 Users.findByID(decoded.id, (err, data) => {
@@ -257,6 +273,7 @@ module.exports = server => {
                             } else {
                                 callback({
                                     message: "Balance is not enough",
+                                    code: "BALANCE_NOT_ENOUGH",
                                     status: false
                                 })
                             }
