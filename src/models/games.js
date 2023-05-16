@@ -1,23 +1,13 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Op } = require("sequelize");
 
 const sequelize = require("../utils/sequelize")
 
 const Table = sequelize.define("games", {
     number: {
         type: DataTypes.INTEGER(2),
-        allowNull: false
-    },
-    winner_color: {
-        type: DataTypes.STRING(5),
-        allowNull: false
+        allowNull: true,
+        default: null
     }
-});
-
-sequelize.sync().then(() => {
-    console.log('Games table created successfully!');
-
-}).catch((error) => {
-    console.error('Unable to create table : ', error);
 });
 
 Table.spinHistory = (result) => {
@@ -25,7 +15,12 @@ Table.spinHistory = (result) => {
         limit: 10,
         order: [
             ["createdAt", "DESC"]
-        ]
+        ],
+        where: {
+            number: {
+                [Op.not]: null
+            }
+        }
     }).then(res => {
         result(null, res);
     }).catch((error) => {

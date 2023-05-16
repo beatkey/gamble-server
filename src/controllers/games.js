@@ -1,4 +1,5 @@
 const Games = require("../models/games")
+const GamePlayers = require("../models/game_players")
 
 exports.spinHistory = (req, res) => {
     Games.spinHistory((err, data) => {
