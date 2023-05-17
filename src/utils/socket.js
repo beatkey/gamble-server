@@ -14,7 +14,7 @@ module.exports = server => {
    });
 
    let gameID = null;
-   const raffleTime = 15000
+   const raffleTime = 15000 // TODO
    const spinTime = 15 // TODO
    let time = spinTime
 
@@ -199,6 +199,12 @@ module.exports = server => {
       })
 
       socket.on("playHandle", ({token, amount, color}, callback) => {
+         if (time <= 1){
+            callback({
+               status: false
+            })
+            return;
+         }
          if (!token) {
             callback({
                message: "No token provided!",
