@@ -23,8 +23,7 @@ const Table = sequelize.define("users", {
     },
     balance: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        default: 0
+        defaultValue: 0
     }
 });
 

@@ -50,12 +50,12 @@ exports.login = (req, res) => {
                         },
                     });
                 }else{
-                    res.status(401).send({
+                    res.status(403).send({
                         message: "Invalid username or password",
                     });
                 }
             }else{
-                res.status(401).send({
+                res.status(403).send({
                     message: "Invalid username or password",
                 });
             }
@@ -66,4 +66,33 @@ exports.login = (req, res) => {
             });
         }
     })
+}
+
+exports.register = async (req, res) => {
+    //console.log(req.body)
+    const {name, surname, email, password} = req.body
+
+    const existingRecord = await Users.findOne({
+        where: {
+            email: email
+        }
+    });
+
+    if (!existingRecord){
+        await Users.create({
+            name,
+            surname,
+            email,
+            password: bcrypt.hashSync(password, 8),
+            balance: 100000
+        }).then(() => {
+            res.status(200).send({})
+        }).catch(e => {
+            console.error('Failed to create a new record : ', e);
+        });
+    }else{
+        res.status(403).send({
+            error: "Email is exists.",
+        });
+    }
 }

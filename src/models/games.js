@@ -6,7 +6,7 @@ const Table = sequelize.define("games", {
     number: {
         type: DataTypes.INTEGER(2),
         allowNull: true,
-        default: null
+        defaultValue: null
     }
 });
 
