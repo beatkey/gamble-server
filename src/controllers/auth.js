@@ -24,17 +24,17 @@ exports.getUsers = (req, res) => {
 exports.login = (req, res) => {
     const {email, password} = req.body
 
-    Users.findByEmail(email , (err, data) => {
-        if (!err){
-            if (data){
+    Users.findByEmail(email, (err, data) => {
+        if (!err) {
+            if (data) {
                 const passwordIsValid = bcrypt.compareSync(
                     password,
                     data.password
                 );
 
-                if (passwordIsValid){
+                if (passwordIsValid) {
                     const expiresIn = 86400 // 24 hours
-                    const token = jwt.sign({ id: data.id, email: data.email }, process.env.JWT_SECRET_KEY, {
+                    const token = jwt.sign({id: data.id, email: data.email}, process.env.JWT_SECRET_KEY, {
                         expiresIn: expiresIn
                     });
 
@@ -49,18 +49,17 @@ exports.login = (req, res) => {
                             balance: data.balance
                         },
                     });
-                }else{
+                } else {
                     res.status(403).send({
                         message: "Invalid username or password",
                     });
                 }
-            }else{
+            } else {
                 res.status(403).send({
                     message: "Invalid username or password",
                 });
             }
-        }
-        else {
+        } else {
             res.status(500).send({
                 message: err,
             });
@@ -78,7 +77,7 @@ exports.register = async (req, res) => {
         }
     });
 
-    if (!existingRecord){
+    if (!existingRecord) {
         await Users.create({
             name,
             surname,
@@ -90,9 +89,45 @@ exports.register = async (req, res) => {
         }).catch(e => {
             console.error('Failed to create a new record : ', e);
         });
-    }else{
+    } else {
         res.status(403).send({
             error: "Email is exists.",
         });
     }
+}
+
+exports.updateInformation = async (req, res) => {
+    const token = req.headers["x-access-token"];
+    const {name, surname, email, password} = req.body
+
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+        if (err) {
+            return res.status(401).send({
+                message: "Unauthorized!"
+            });
+        }
+
+        const data = {
+            name,
+            surname: surname,
+        }
+
+        if (password.length >= 6){
+            data.password = bcrypt.hashSync(password, 8)
+        }
+
+        Users.update(data, {
+            where: {
+                id: decoded.id,
+                email
+            }
+        }).then(() => {
+            res.status(200).send({});
+        }).catch(e => {
+            console.error(e)
+            res.status(500).send({
+                message: e
+            });
+        });
+    });
 }
