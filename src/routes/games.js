@@ -1,9 +1,9 @@
-const express = require('express');
+import express from "express";
 const router = express.Router();
 
-const GamesController = require("../controllers/games")
+import {spinHistory, gameHistory} from "../controllers/games.js"
 
-router.get('/spin-history', GamesController.spinHistory);
-router.get('/game-history', GamesController.gameHistory);
+router.get('/spin-history', spinHistory);
+router.get('/game-history', gameHistory);
 
-module.exports = router;
+export default router;

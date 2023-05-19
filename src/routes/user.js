@@ -1,8 +1,8 @@
-const express = require('express');
+import express from "express";
 const router = express.Router();
 
-const UserController = require("../controllers/user")
+import {getBalance} from "../controllers/user.js";
 
-router.get('/balance', UserController.getBalance);
+router.get('/balance', getBalance);
 
-module.exports = router;
+export default router;

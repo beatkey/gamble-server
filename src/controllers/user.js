@@ -1,7 +1,7 @@
-const Users = require("../models/users")
-const jwt = require("jsonwebtoken");
+import {Users} from "../models/users.js";
+import jwt from "jsonwebtoken";
 
-exports.getBalance = (req, res) => {
+const getBalance = (req, res) => {
     const token = req.headers["x-access-token"];
 
     if (!token) {
@@ -32,4 +32,8 @@ exports.getBalance = (req, res) => {
         });
     });
 
+}
+
+export {
+    getBalance
 }

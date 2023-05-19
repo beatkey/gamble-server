@@ -1,9 +1,9 @@
-const dotenv = require('dotenv');
+import dotenv from "dotenv";
 dotenv.config({path: './.env'});
 
-const Users = require('../models/users');
-const Games = require('../models/games');
-const GamePlayers = require('../models/game_players');
+import {Users} from "../models/users.js";
+import {Games} from "../models/games.js";
+import {GamePlayers} from "../models/game_players.js";
 
 async function initialize() {
     try {

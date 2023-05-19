@@ -1,8 +1,7 @@
-const { DataTypes, Op } = require("sequelize");
+import {DataTypes, Op} from "sequelize";
+import sequelize from "../utils/sequelize.js"
 
-const sequelize = require("../utils/sequelize")
-
-const Table = sequelize.define("games", {
+export const Games = sequelize.define("games", {
     number: {
         type: DataTypes.INTEGER(2),
         allowNull: true,
@@ -10,8 +9,8 @@ const Table = sequelize.define("games", {
     }
 });
 
-Table.spinHistory = (result) => {
-    Table.findAll({
+Games.spinHistory = (result) => {
+    Games.findAll({
         limit: 10,
         order: [
             ["createdAt", "DESC"]
@@ -27,5 +26,3 @@ Table.spinHistory = (result) => {
         console.error('Failed to retrieve data : ', error);
     });
 }
-
-module.exports = Table

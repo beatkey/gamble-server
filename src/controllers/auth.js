@@ -1,27 +1,9 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require("bcryptjs")
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
-const Users = require("../models/users")
+import {Users} from "../models/users.js";
 
-exports.getUsers = (req, res) => {
-    Users.getAll((err, data) => {
-        if (!err)
-            res.send({
-                statusCode: 200,
-                message: 'Successfully retrieved all the users.',
-                data: data,
-            });
-        else {
-            res.status(500).send({
-                statusCode: 500,
-                message: e.message,
-            });
-        }
-        ;
-    });
-}
-
-exports.login = (req, res) => {
+const login = (req, res) => {
     const {email, password} = req.body
 
     Users.findByEmail(email, (err, data) => {
@@ -67,7 +49,7 @@ exports.login = (req, res) => {
     })
 }
 
-exports.register = async (req, res) => {
+const register = async (req, res) => {
     //console.log(req.body)
     const {name, surname, email, password} = req.body
 
@@ -96,7 +78,7 @@ exports.register = async (req, res) => {
     }
 }
 
-exports.updateInformation = async (req, res) => {
+const updateInformation = async (req, res) => {
     const token = req.headers["x-access-token"];
     const {name, surname, email, password} = req.body
 
@@ -130,4 +112,10 @@ exports.updateInformation = async (req, res) => {
             });
         });
     });
+}
+
+export {
+    login,
+    register,
+    updateInformation
 }

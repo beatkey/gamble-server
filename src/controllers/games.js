@@ -1,8 +1,9 @@
-const Games = require("../models/games")
-const GamePlayers = require("../models/game_players")
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
-exports.spinHistory = (req, res) => {
+import {Games} from "../models/games.js";
+import {GamePlayers} from "../models/game_players.js";
+
+const spinHistory = (req, res) => {
     Games.spinHistory((err, data) => {
         if (!err)
             res.send({
@@ -19,8 +20,7 @@ exports.spinHistory = (req, res) => {
     });
 }
 
-exports.gameHistory = (req, res) => {
-    console.log(req.body)
+const gameHistory = (req, res) => {
     const token = req.headers["x-access-token"];
 
     if (!token) {
@@ -36,9 +36,10 @@ exports.gameHistory = (req, res) => {
             });
         }
 
-        console.log(decoded)
+        //console.log(decoded)
 
         GamePlayers.findAll({
+            //include: Games,
             where: {
                 user_id: decoded.id
             }
@@ -53,4 +54,9 @@ exports.gameHistory = (req, res) => {
 
 
     });
+}
+
+export {
+    spinHistory,
+    gameHistory
 }

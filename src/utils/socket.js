@@ -1,17 +1,17 @@
-const {Sequelize} = require("sequelize");
+import {Sequelize} from "sequelize";
+import jwt from "jsonwebtoken"
+import {Server} from "socket.io";
 
-const jwt = require("jsonwebtoken");
+import {Games} from "../models/games.js"
+import {Users} from "../models/users.js"
+import {GamePlayers} from "../models/game_players.js"
 
-const Games = require("../models/games")
-const Users = require("../models/users")
-const GamePlayers = require("../models/game_players")
-
-module.exports = server => {
-   io = require('socket.io')(server, {
+export default function Socket(server){
+   const io = new Server(server, {
       cors: {
          origin: '*',
       }
-   });
+   })
 
    let gameID = null;
    const raffleTime = 15000 // TODO
@@ -121,8 +121,8 @@ module.exports = server => {
          for (const value of players.red) {
             try {
                await Users.update(
-                  {balance: Sequelize.literal(`balance + ${value.amount * 2}`)},
-                  {where: {id: value.id}}
+                   {balance: Sequelize.literal(`balance + ${value.amount * 2}`)},
+                   {where: {id: value.id}}
                );
             } catch (e) {
                throw new Error(e)
@@ -132,8 +132,8 @@ module.exports = server => {
          for (const value of players.black) {
             try {
                await Users.update(
-                  {balance: Sequelize.literal(`balance + ${value.amount * 2}`)},
-                  {where: {id: value.id}}
+                   {balance: Sequelize.literal(`balance + ${value.amount * 2}`)},
+                   {where: {id: value.id}}
                );
             } catch (e) {
                throw new Error(e)
@@ -143,8 +143,8 @@ module.exports = server => {
          for (const value of players.green) {
             try {
                await Users.update(
-                  {balance: Sequelize.literal(`balance + ${value.amount * 14}`)},
-                  {where: {id: value.id}}
+                   {balance: Sequelize.literal(`balance + ${value.amount * 14}`)},
+                   {where: {id: value.id}}
                );
             } catch (e) {
                throw new Error(e)

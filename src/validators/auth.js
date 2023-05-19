@@ -1,6 +1,6 @@
-const joi = require("joi")
+import joi from "joi"
 
-exports.login = (req, res, next) => {
+const login = (req, res, next) => {
     const schema = joi.object({
         email: joi.string().email().required(),
         password: joi.string().min(6).required(),
@@ -14,7 +14,7 @@ exports.login = (req, res, next) => {
     next()
 }
 
-exports.register = (req, res, next) => {
+const register = (req, res, next) => {
     const schema = joi.object({
         name: joi.string().required(),
         surname: joi.string().required(),
@@ -30,7 +30,7 @@ exports.register = (req, res, next) => {
     next()
 }
 
-exports.updateInformation = (req, res, next) => {
+const updateInformation = (req, res, next) => {
     const token = req.headers["x-access-token"];
 
     if (!token) {
@@ -52,4 +52,10 @@ exports.updateInformation = (req, res, next) => {
     }
 
     next()
+}
+
+export {
+    login,
+    register,
+    updateInformation
 }
