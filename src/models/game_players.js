@@ -1,5 +1,6 @@
 import {DataTypes} from "sequelize";
 import sequelize from "../utils/sequelize.js";
+import {Games} from "./games.js";
 
 export const GamePlayers = sequelize.define("game_players", {
     game_id: {
@@ -19,3 +20,7 @@ export const GamePlayers = sequelize.define("game_players", {
         allowNull: false
     }
 });
+
+GamePlayers.belongsTo(Games, {
+    foreignKey: "game_id",
+})

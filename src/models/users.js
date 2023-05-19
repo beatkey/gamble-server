@@ -92,7 +92,11 @@ Users.getBalance = (id, result) => {
             id: id
         }
     }).then(res => {
-        result(null, res.balance);
+        if (res){
+            result(null, res.balance);
+        }else{
+            result("User not found");
+        }
     }).catch(err => {
         console.log("error: ", err);
         result(null, err);

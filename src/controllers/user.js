@@ -26,7 +26,7 @@ const getBalance = (req, res) => {
             else {
                 res.status(500).send({
                     statusCode: 500,
-                    message: e.message,
+                    message: err,
                 });
             }
         });

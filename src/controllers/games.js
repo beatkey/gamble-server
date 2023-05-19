@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 
 import {Games} from "../models/games.js";
 import {GamePlayers} from "../models/game_players.js";
+import {getPagination, getPagingData} from "../utils/pagination.js";
 
 const spinHistory = (req, res) => {
     Games.spinHistory((err, data) => {
@@ -16,12 +17,13 @@ const spinHistory = (req, res) => {
                 message: e.message,
             });
         }
-        ;
     });
 }
 
 const gameHistory = (req, res) => {
     const token = req.headers["x-access-token"];
+    const { page } = req.query;
+    const size = 10
 
     if (!token) {
         return res.status(403).send({
@@ -36,23 +38,29 @@ const gameHistory = (req, res) => {
             });
         }
 
-        //console.log(decoded)
+        const { limit, offset } = getPagination(page, size);
 
-        GamePlayers.findAll({
-            //include: Games,
+        GamePlayers.findAndCountAll({
+            limit,
+            offset,
+            attributes: ["color", "amount", "createdAt"],
+            include: {
+                model: Games,
+                attributes: ["number"]
+            },
             where: {
                 user_id: decoded.id
-            }
+            },
+            order: [
+                ["createdAt", "DESC"]
+            ]
         }).then(data => {
-            //console.log(data)
-            res.send(data)
+            res.send(getPagingData(data, page, limit))
         }).catch(e => {
             res.status(500).send({
                 error: e
             })
         })
-
-
     });
 }
 
