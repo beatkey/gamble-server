@@ -57,6 +57,7 @@ const gameHistory = (req, res) => {
         }).then(data => {
             res.send(getPagingData(data, page, limit))
         }).catch(e => {
+            console.error(e)
             res.status(500).send({
                 error: e
             })
