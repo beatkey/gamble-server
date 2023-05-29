@@ -66,8 +66,10 @@ export default function Socket(server){
          console.log("Game started ID:" + gameID)
          const timer = setInterval(() => {
             if (time > 0) {
+               console.log("Time: ", time)
                time--
             } else {
+               console.log("Spinning...")
                spin()
                clearInterval(timer)
                time = 0
@@ -172,7 +174,7 @@ export default function Socket(server){
             status: false
          })
       });
-
+      console.log(user, amount)
       Users.setBalance({
          id: user.id,
          balance: user.balance - amount
