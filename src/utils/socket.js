@@ -170,29 +170,29 @@ export default function Socket(server) {
             user_id: user.id,
             color: color,
             amount: amount
+        }).then(() => {
+            Users.setBalance({
+                id: user.id,
+                balance: user.balance - amount
+            }, (err, data) => {
+                if (!err) {
+                    io.emit("updatePlayers", players);
+                    callback({
+                        status: true
+                    })
+                } else {
+                    callback({
+                        message: err,
+                        status: false
+                    })
+                }
+            })
         }).catch((err) => {
             callback({
                 message: err,
                 status: false
             })
         });
-
-        Users.setBalance({
-            id: user.id,
-            balance: user.balance - amount
-        }, (err, data) => {
-            if (!err) {
-                io.emit("updatePlayers", players);
-                callback({
-                    status: true
-                })
-            } else {
-                callback({
-                    message: err,
-                    status: false
-                })
-            }
-        })
     }
 
     io.on('connection', (socket) => {
