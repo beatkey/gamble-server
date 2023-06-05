@@ -44,6 +44,7 @@ const updateInformation = (req, res, next) => {
         surname: joi.string().required(),
         email: joi.string().email().required(),
         password: joi.string().optional().allow('').min(6),
+        photo: joi.optional()
     });
 
     const { error } = schema.validate(req.body);

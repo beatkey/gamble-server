@@ -20,6 +20,10 @@ export const Users = sequelize.define("users", {
         type: DataTypes.TEXT,
         allowNull: false
     },
+    photo: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     balance: {
         type: DataTypes.INTEGER,
         defaultValue: 0
