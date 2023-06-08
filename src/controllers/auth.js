@@ -29,7 +29,8 @@ const login = (req, res) => {
                             name: data.name,
                             surname: data.surname,
                             email: data.email,
-                            balance: data.balance
+                            balance: data.balance,
+                            photo: data.photo
                         },
                     });
                 } else {
@@ -170,9 +171,38 @@ const getBalance = (req, res) => {
     });
 }
 
+const getUser = (req, res) => {
+    const token = req.headers["x-access-token"];
+
+    if (!token) {
+        return res.status(403).send({
+            message: "No token provided!"
+        });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+        if (err) {
+            return res.status(401).send({
+                message: "Unauthorized!"
+            });
+        }
+
+        Users.findByID(decoded.id, (err, data) => {
+            if (!err)
+                res.send(data);
+            else {
+                res.status(500).send({
+                    message: err,
+                });
+            }
+        });
+    });
+}
+
 export {
     login,
     register,
     updateInformation,
-    getBalance
+    getBalance,
+    getUser
 }

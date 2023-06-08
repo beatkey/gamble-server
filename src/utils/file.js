@@ -6,7 +6,7 @@ function checkExtension(fileName, type = "photo") {
         allowedExtensions = ['.mp4'];
     }
 
-    const ext = fileName.split('.').pop();
+    const ext = fileName.split('.').pop().toLowerCase();
     return !!allowedExtensions.includes(`.${ext}`);
 }
 
@@ -18,7 +18,7 @@ function checkFileSize(fileSize) {
 function fileNameGenerator(fileName) {
     const ext = fileName.split('.').pop();
     const randomNumber = Math.floor(Math.random() * 100 ** 2);
-    return `${randomNumber}-${Date.now()}.${ext}`;
+    return `${randomNumber}-${Date.now()}.${ext}`.trim();
 }
 
 export const fileUpload = (file, type = "photo") => {
@@ -37,7 +37,7 @@ export const fileUpload = (file, type = "photo") => {
             }
         }
 
-        const uploadPath = 'uploads/' + fileNameGenerator(file.name);
+        const uploadPath = 'public/' + fileNameGenerator(file.name);
         file.mv(uploadPath, function (err) {
             if (err) {
                 return {
