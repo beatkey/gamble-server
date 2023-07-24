@@ -159,7 +159,7 @@ const getBalance = (req, res) => {
             if (!err)
                 res.send({
                     statusCode: 200,
-                    data: data,
+                    balance: data,
                 });
             else {
                 res.status(500).send({
